@@ -1,5 +1,5 @@
 // 学会英語ラボ service worker: アプリ本体はネット優先・失敗時キャッシュ、音声は保存済みならキャッシュから（Range対応）
-const SHELL = "gel-shell-v1";
+const SHELL = "gel-shell-v2";
 const AUDIO = "gel-audio-v1";
 const SHELL_FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png"];
 
@@ -41,7 +41,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
 
-  if (url.pathname.includes("/audio/")) {
+  if (url.pathname.includes("/audio/") || url.pathname.includes("/course/")) {
     e.respondWith(caches.open(AUDIO).then(c => c.match(url.pathname.split("/").slice(-2).join("/"))
       .then(hit => hit || c.match(req.url))
       .then(hit => hit ? rangeResponse(req, hit) : fetch(req))));
